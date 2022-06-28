@@ -48,10 +48,18 @@ if [ "$CHOSE_OS" == "Ubuntu 18.04" ]; then # These are the services the user can
                       fi
                       ;;
                     "MySQL")
-                      echo "Option 2 was selected"
+                      sudo apt update
+                      sudo apt install mysql-server
+                      sudo systemctl enable mysql.service
+                      sudo systemctl start mysql.service
                       ;;
                     "PostgreSQL")
-                      echo "Option 3 was selected"
+                      sudo apt update
+                      sudo apt install -y wget ca-certificates
+                      sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+                      wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+                      sudo apt update
+                      sudo apt install -y postgresql postgresql-contrib
                       ;;
                     "Essential packages")
                       echo "Option 4 was selected"
