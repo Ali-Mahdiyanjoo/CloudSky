@@ -60,6 +60,8 @@ if [ "$CHOSE_OS" == "Ubuntu 18.04" ]; then # These are the services the user can
                       wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
                       sudo apt update
                       sudo apt install -y postgresql postgresql-contrib
+                      sudo systemctl enable postgresql.service
+                      sudo systemctl start postgresql.service
                       ;;
                     "Essential packages")
                       echo "Option 4 was selected"
