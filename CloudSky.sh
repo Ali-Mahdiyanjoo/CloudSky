@@ -19,16 +19,53 @@ if [ "$CHOSE_OS" == "Ubuntu 18.04" ]; then
         for CHOICE in $CHOICES; do
             case "$CHOICE" in
             "MongoDB")
-            echo "Option 1 was selected"
+            sudo apt install -y wget
+            wget -qO - https://www.mongodb.org/static/pgp/server-5.0.asc | sudo apt-key add -
+            if [ $? == 0 ]; then
+                echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/5.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-5.0.list
+                sudo apt-get update
+                sudo apt-get install -y mongodb-org
+                sudo systemctl enable mongod.service
+                sudo systemctl start mongod.service
+                sudo systemctl status mongod.service
+                if [ $? == 4 ]; then
+                    sudo systemctl daemon-reload
+                fi
+            else
+                sudo apt -y install gnupg
+                wget -qO - https://www.mongodb.org/static/pgp/server-5.0.asc | sudo apt-key add -
+                echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/5.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-5.0.list
+                sudo apt-get update
+                sudo apt-get install -y mongodb-org
+                sudo systemctl enable mongod.service
+                sudo systemctl start mongod.service
+                sudo systemctl status mongod.service
+                if [ $? == 4 ]; then
+                    sudo systemctl daemon-reload
+                fi
+            fi
             ;;
             "MySQL")
-            echo "Option 2 was selected"
+            sudo apt update
+            sudo apt install mysql-server
+            sudo systemctl enable mysql.service
+            sudo systemctl start mysql.service
             ;;
             "PostgreSQL")
-            echo "Option 3 was selected"
+            sudo apt update
+            sudo apt install -y wget ca-certificates
+            sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+            wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+            sudo apt update
+            sudo apt install -y postgresql postgresql-contrib
+            sudo systemctl enable postgresql.service
+            sudo systemctl start postgresql.service
             ;;
             "Redis")
-            echo "Option 4 was selected"
+            sudo apt update
+            sudo apt install redis-server
+            sudo systemctl enable redis-server.service
+            sydi systemctl start redis-server.service
             ;;
             *)
             echo "Unsupported item $CHOICE!" >&2
@@ -51,60 +88,56 @@ elif [ "$CHOSE_OS" == "Ubuntu 20.04" ]; then
         for CHOICES in $CHOICE_SERVICE; do
           case "$CHOICES" in
           "MongoDB")
-          echo "MongoDB"
-          # sudo apt install -y wget
-          # wget -qO - https://www.mongodb.org/static/pgp/server-5.0.asc | sudo apt-key add -
-          # if [ $? == 0 ]; then
-          #     echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/5.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-5.0.list
-          #     sudo apt-get update
-          #     sudo apt-get install -y mongodb-org
-          #     sudo systemctl enable mongod.service
-          #     sudo systemctl start mongod.service
-          #     sudo systemctl status mongod.service
-          #     if [ $? == 4 ]; then
-          #         sudo systemctl daemon-reload
+          sudo apt install -y wget
+          wget -qO - https://www.mongodb.org/static/pgp/server-5.0.asc | sudo apt-key add -
+          if [ $? == 0 ]; then
+              echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/5.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-5.0.list
+              sudo apt-get update
+              sudo apt-get install -y mongodb-org
+              sudo systemctl enable mongod.service
+              sudo systemctl start mongod.service
+              sudo systemctl status mongod.service
+              if [ $? == 4 ]; then
+                  sudo systemctl daemon-reload
               
-          #     fi
+              fi
           
-          # else
-          #     sudo apt -y install gnupg
-          #     wget -qO - https://www.mongodb.org/static/pgp/server-5.0.asc | sudo apt-key add -
-          #     echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/5.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-5.0.list
-          #     sudo apt-get update
-          #     sudo apt-get install -y mongodb-org
-          #     sudo systemctl enable mongod.service
-          #     sudo systemctl start mongod.service
-          #     sudo systemctl status mongod.service
-          #     if [ $? == 4 ]; then
-          #         sudo systemctl daemon-reload
+          else
+              sudo apt -y install gnupg
+              wget -qO - https://www.mongodb.org/static/pgp/server-5.0.asc | sudo apt-key add -
+              echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/5.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-5.0.list
+              sudo apt-get update
+              sudo apt-get install -y mongodb-org
+              sudo systemctl enable mongod.service
+              sudo systemctl start mongod.service
+              sudo systemctl status mongod.service
+              if [ $? == 4 ]; then
+                  sudo systemctl daemon-reload
               
-          #     fi
-          # fi
+              fi
+          fi
           ;;
           "MySQL")
-          echo "Mysql"
-          # sudo apt update
-          # sudo apt install mysql-server
-          # sudo systemctl enable mysql.service
-          # sudo systemctl start mysql.service
+          sudo apt update
+          sudo apt install mysql-server
+          sudo systemctl enable mysql.service
+          sudo systemctl start mysql.service
           ;;
           "PostgreSQL")
-          echo "PostgreSQL"
-          # sudo apt update
-          # sudo apt install -y wget ca-certificates
-          # sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
-          # wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
-          # sudo apt update
-          # sudo apt install -y postgresql postgresql-contrib
-          # sudo systemctl enable postgresql.service
-          # sudo systemctl start postgresql.service
+          sudo apt update
+          sudo apt install -y wget ca-certificates
+          sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+          wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+          sudo apt update
+          sudo apt install -y postgresql postgresql-contrib
+          sudo systemctl enable postgresql.service
+          sudo systemctl start postgresql.service
           ;;
           "Redis")
-          echo "Redis"
-          # sudo apt update
-          # sudo apt install redis-server
-          # sudo systemctl enable redis-server.service
-          # sydi systemctl start redis-server.service
+          sudo apt update
+          sudo apt install redis-server
+          sudo systemctl enable redis-server.service
+          sydi systemctl start redis-server.service
           ;;
           *)
           echo "Unsupported item $CHOICES!" >&2
