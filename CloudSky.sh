@@ -7,11 +7,12 @@ CHOSE_OS=$(whiptail --menu "Choose an option" 15 80 5 \
   "Ubuntu 20.04" " " 3>&1 1>&2 2>&3) # This would make a selectable list for chosing os version or distro
 
 if [ "$CHOSE_OS" == "Ubuntu 18.04" ]; then
-    CHOICES=$(whiptail --separate-output --checklist "Choose options" 20 120 5 \
+    CHOICES=$(whiptail --separate-output --checklist "Choose options" 15 120 10 \
     "MongoDB" "MongoDB is a source-available cross-platform document-oriented database program." OFF \
     "MySQL" "MySQL is an open-source relational database management system." OFF \
     "PostgreSQL" "PostgreSQL, is a free and open-source relational database management system." OFF \
-    "Redis" "Redis is an open source nosql database that is in-memory data structure store." OFF 3>&1 1>&2 2>&3)
+    "Redis" "Redis is an open source nosql database that is in-memory data structure store." OFF \
+    "Docker" "Docker is a set of PaaS that use OS-level virtualization to deliver containers." OFF 3>&1 1>&2 2>&3)
 
     if [ -z "$CHOICES" ]; then
                 echo "No option was selected (user hit Cancel or unselected all options)"
@@ -47,7 +48,7 @@ if [ "$CHOSE_OS" == "Ubuntu 18.04" ]; then
             ;;
             "MySQL")
             sudo apt update
-            sudo apt install mysql-server
+            sudo apt install mysql-server -y
             sudo systemctl enable mysql.service
             sudo systemctl start mysql.service
             ;;
@@ -63,9 +64,21 @@ if [ "$CHOSE_OS" == "Ubuntu 18.04" ]; then
             ;;
             "Redis")
             sudo apt update
-            sudo apt install redis-server
+            sudo apt install redis-server -y
             sudo systemctl enable redis-server.service
             sydi systemctl start redis-server.service
+            ;;
+            "Docker")
+            sudo apt update
+            sudo apt install ca-certificates curl gnupg lsb-release -y
+            sudo mkdir -p /etc/apt/keyrings
+            curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+            echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+            sudo apt update
+            sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin -y
+            sudo groupadd docker
+            sudo usermod -aG docker $USER
+            newgrp docker
             ;;
             *)
             echo "Unsupported item $CHOICE!" >&2
@@ -76,11 +89,12 @@ if [ "$CHOSE_OS" == "Ubuntu 18.04" ]; then
     fi
   
 elif [ "$CHOSE_OS" == "Ubuntu 20.04" ]; then
-    CHOICE_SERVICE=$(whiptail --separate-output --checklist "Choose OS version" 20 120 5 \
+    CHOICE_SERVICE=$(whiptail --separate-output --checklist "Choose OS version" 15 120 10 \
     "MongoDB" "MongoDB is a source-available cross-platform document-oriented database program." OFF \
     "MySQL" "MySQL is an open-source relational database management system." OFF \
     "PostgreSQL" "PostgreSQL, is a free and open-source relational database management system." OFF \
-    "Redis" "Redis is an open source nosql database that is in-memory data structure store." OFF 3>&1 1>&2 2>&3)
+    "Redis" "Redis is an open source nosql database that is in-memory data structure store." OFF \
+    "Docker" "Docker is a set of PaaS that use OS-level virtualization to deliver containers." OFF 3>&1 1>&2 2>&3)
 
     if [ -z "$CHOICE_SERVICE" ]; then # The -z is when the user did not chose any option or hit cancel bottome
             echo "No option was selected (user hit Cancel or unselected all options)"
@@ -119,7 +133,7 @@ elif [ "$CHOSE_OS" == "Ubuntu 20.04" ]; then
           ;;
           "MySQL")
           sudo apt update
-          sudo apt install mysql-server
+          sudo apt install mysql-server -y
           sudo systemctl enable mysql.service
           sudo systemctl start mysql.service
           ;;
@@ -135,9 +149,21 @@ elif [ "$CHOSE_OS" == "Ubuntu 20.04" ]; then
           ;;
           "Redis")
           sudo apt update
-          sudo apt install redis-server
+          sudo apt install redis-server -y
           sudo systemctl enable redis-server.service
           sydi systemctl start redis-server.service
+          ;;
+          "Docker")
+          sudo apt update
+          sudo apt install ca-certificates curl gnupg lsb-release -y
+          sudo mkdir -p /etc/apt/keyrings
+          curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+          echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+          sudo apt update
+          sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin -y
+          sudo groupadd docker
+          sudo usermod -aG docker $USER
+          newgrp docker
           ;;
           *)
           echo "Unsupported item $CHOICES!" >&2
