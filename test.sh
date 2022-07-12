@@ -43,7 +43,8 @@ elif [ "$CHOSE_OS" == "Ubuntu 20.04" ]; then
     "MongoDB" "MongoDB is a source-available cross-platform document-oriented database program." OFF \
     "MySQL" "MySQL is an open-source relational database management system." OFF \
     "PostgreSQL" "PostgreSQL, is a free and open-source relational database management system." OFF \
-    "Redis" "Redis is an open source nosql database that is in-memory data structure store." OFF 3>&1 1>&2 2>&3)
+    "Redis" "Redis is an open source nosql database that is in-memory data structure store." OFF \
+    "Docker" "Docker is a set of PaaS that use OS-level virtualization to deliver software in packages called containers." OFF 3>&1 1>&2 2>&3)
 
     if [ -z "$CHOICE_SERVICE" ]; then # The -z is when the user did not chose any option or hit cancel bottome
             echo "No option was selected (user hit Cancel or unselected all options)"
@@ -105,6 +106,9 @@ elif [ "$CHOSE_OS" == "Ubuntu 20.04" ]; then
           # sudo apt install redis-server
           # sudo systemctl enable redis-server.service
           # sydi systemctl start redis-server.service
+          ;;
+          "Docker")
+          echo "Docker"
           ;;
           *)
           echo "Unsupported item $CHOICES!" >&2
